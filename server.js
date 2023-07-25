@@ -5,6 +5,7 @@ const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 require("dotenv").config();
+const toolRoute = require('./Routes/toolRoute')
 
 const { MONGOATLAS } = process.env;
 
@@ -19,6 +20,8 @@ mongoose
   });
 
 app.use(cors(), express.json(), helmet(), cookieParser());
+
+app.use('/tools', toolRoute)
 
 app.listen(5000, () => {
   console.log("Server running on port 5000");
