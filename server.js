@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const projectRouter = require("./Routes/project.route")
 require("dotenv").config();
 const toolRoute = require('./Routes/toolRoute')
 
@@ -21,7 +22,9 @@ mongoose
 
 app.use(cors(), express.json(), helmet(), cookieParser());
 
+app.use("/project" ,projectRouter)
 app.use('/tools', toolRoute)
+
 
 app.listen(5000, () => {
   console.log("Server running on port 5000");
