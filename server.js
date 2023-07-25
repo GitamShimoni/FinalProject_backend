@@ -5,7 +5,10 @@ const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const contractorRouter = require("./Routes/contractor.route");
+const projectRouter = require("./Routes/project.route")
+
 require("dotenv").config();
+const toolRoute = require('./Routes/toolRoute')
 
 const { MONGOATLAS } = process.env;
 
@@ -21,7 +24,12 @@ mongoose
 
 app.use(cors(), express.json(), helmet(), cookieParser());
 
+
 app.use("/contractor", contractorRouter);
+app.use("/project" ,projectRouter)
+app.use('/tools', toolRoute)
+
+
 
 app.listen(5000, () => {
   console.log("Server running on port 5000");
