@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const ironOrderSchema = new mongoose.Schema({
+  ordersId: { type: String },
   ironName: { type: String },
   dateOfOrder: { type: Date },
   requestedArrivalDate: { type: Date },
