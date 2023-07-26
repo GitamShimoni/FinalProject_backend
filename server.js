@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const contractorRouter = require("./Routes/contractor.route");
 const projectRouter = require("./Routes/project.route")
+const productRouter = require("./Routes/product.route")
 
 require("dotenv").config();
 const toolRoute = require('./Routes/toolRoute')
@@ -26,6 +27,7 @@ app.use(cors(), express.json(), helmet(), cookieParser());
 
 
 app.use("/contractor", contractorRouter);
+app.use("/product", productRouter);
 app.use("/project" ,projectRouter)
 app.use('/tools', toolRoute)
 
