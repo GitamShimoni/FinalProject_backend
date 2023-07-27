@@ -6,8 +6,8 @@ const productSchema = new mongoose.Schema({
     quantity: {type: Number},
     minQuantity: {type: Number},
     isIron: { type: Boolean}, 
-    orderId: { type: Date}
-    
+    orderId: {type: String},
+
 });
 
 module.exports = mongoose.model('Product', productSchema);
