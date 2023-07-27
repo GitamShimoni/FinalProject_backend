@@ -26,7 +26,7 @@ const createTool = async (req, res) => {
       const updateInventory = await Inventory.findByIdAndUpdate(
         project.inventory,
         { $push: { tools: newTool } },
-        { new: true } 
+        { new: true }
       ).populate("tools");
 
       res.status(200).json(updateInventory);
@@ -39,16 +39,13 @@ const createTool = async (req, res) => {
 };
 const updateTool = async (req, res) => {
   try {
-    const toolId = req.body.toolId;
-    const updatedTool = await Tool.findByIdAndUpdate(
-      toolId,
+    const { toolId, toolName } = req.body;
+    console.log(toolId);
+    const updatedTool = await Tool.findOneAndReplace(
+      { _id: toolId },
       {
-        toolName: req.body.toolName,
-        takenBy: req.body.takenBy,
-        signed: req.body.signed,
-        date: req.body.date,
-      },
-      { mew: true }
+        toolName: toolName,
+      }
     );
     res.status(201).json(updatedTool);
   } catch {
@@ -66,23 +63,22 @@ const updateTool = async (req, res) => {
 //   }
 // };
 const deleteTool = async (req, res) => {
-    console.log(req.body);
-    console.log(req.body.toolId);
-    try {
-      const toolId = req.body.toolId;
-      const deletedTool = await Tool.findByIdAndDelete(toolId);
-        console.log(deletedTool);
-      if (!deletedTool) {
-        return res.status(404).json({ error: 'Tool not found' });
-      }
-  
-      res.status(200).json({ message: 'Tool deleted successfully' });
-    } catch (err) {
-      res.status(500).json({ error: "Couldn't delete the tool", err });
+  console.log(req.body);
+  console.log(req.body.toolId);
+  try {
+    const toolId = req.body.toolId;
+    const deletedTool = await Tool.findByIdAndDelete(toolId);
+    console.log(deletedTool);
+    if (!deletedTool) {
+      return res.status(404).json({ error: "Tool not found" });
     }
-  };
 
-  
+    res.status(200).json({ message: "Tool deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: "Couldn't delete the tool", err });
+  }
+};
+
 const getTool = async (req, res) => {
   try {
     const toolId = req.body.toolId;
@@ -100,18 +96,18 @@ const getTool = async (req, res) => {
 };
 
 const getAllTools = async (req, res) => {
-    const {inventoryId} = req.body;
-    console.log(inventoryId);
-    try {
-      const inventory = await Inventory.findById(inventoryId).populate("tools");
-  
-        if (inventory && inventory.tools) {
-        res.status(200).json(inventory.tools);
-      } else {
-        res.status(404).json("wasn't able to find tool or tools");
-      }
-    } catch {
-      res.status(500).json("fuck");
+  const { inventoryId } = req.body;
+  console.log(inventoryId);
+  try {
+    const inventory = await Inventory.findById(inventoryId).populate("tools");
+    console.log(inventory, "This is the inventory");
+    if (inventory && inventory.tools) {
+      res.status(200).json(inventory.tools);
+    } else {
+      res.status(404).json("wasn't able to find tool or tools");
     }
-  };
+  } catch {
+    res.status(500).json("fuck");
+  }
+};
 module.exports = { createTool, updateTool, deleteTool, getTool, getAllTools };

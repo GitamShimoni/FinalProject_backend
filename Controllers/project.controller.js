@@ -1,15 +1,14 @@
 const Project = require("../Models/project");
 const Inventory = require("../Models/inventory");
 const Contractor = require("../Models/contractor");
-const Order = require("../Models/order");
-
+const Orders = require("../Models/orders");
 
 exports.createProject = async (req, res) => {
   try {
-    //A METHOD THAT CREATES A NEW PROJECT
-    const newInventory = await Inventory.create({})
-    const newContractor = await Contractor.create({})
-    const newOrder = await Order.create({})
+    //A METHOD THAT CREATES A NEW PROJECT, need Name, starting date, finish date, projectManager(String)
+    const newInventory = await Inventory.create({});
+    const newContractor = await Contractor.create({});
+    const newOrders = await Orders.create({});
     const { name, startingDate, finishDate, projectManager } = req.body;
     const newProject = await Project.create({
       name,
@@ -18,7 +17,7 @@ exports.createProject = async (req, res) => {
       projectManager,
       inventory: newInventory._id,
       contractors: newContractor._id,
-      orders: newContractor._id
+      projectOrders: newOrders._id,
     });
 
     res.status(201).json(newProject);
@@ -46,6 +45,18 @@ exports.getProjectById = async (req, res) => {
     const project = await Project.findById(projectId);
 
     res.status(201).json(project);
+  } catch {
+    res.status(401).send("Couldn't find this project");
+  }
+};
+exports.createProjectOrders = async (req, res) => {
+  try {
+    const { projectId } = req.body;
+    const orders = Orders.create({});
+    const newProject = Project.findByIdAndUpdate(projectId, {
+      orders: orders._id,
+    });
+    res.status(200).send("Success!");
   } catch {
     res.status(401).send("Couldn't find this project");
   }
