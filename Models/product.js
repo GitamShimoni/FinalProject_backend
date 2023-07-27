@@ -4,10 +4,9 @@ const productSchema = new mongoose.Schema({
     name: {type: String},
     unit: {type: String},
     quantity: {type: Number},
-    minimum: {type: Number},
-    arrived: { type: Boolean}, 
-    phone: { type: Date}
-    
+    minQuantity: {type: Number},
+    isIron: { type: Boolean}, 
+    orderId: {type: String},
 });
 
 module.exports = mongoose.model('Product', productSchema);
