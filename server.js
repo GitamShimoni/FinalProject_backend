@@ -6,9 +6,14 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const contractorRouter = require("./Routes/contractor.route");
 const projectRouter = require("./Routes/project.route")
+const productOrderRoute = require("./Routes/productOrderRoute")
+const ironOrderRoute = require("./Routes/ironOrderRoute")
+
+const productRouter = require("./Routes/product.route")
 
 require("dotenv").config();
-const toolRoute = require('./Routes/toolRoute')
+const toolRoute = require('./Routes/toolRoute');
+const productOrder = require("./Models/productOrder");
 
 const { MONGOATLAS } = process.env;
 
@@ -26,8 +31,11 @@ app.use(cors(), express.json(), helmet(), cookieParser());
 
 
 app.use("/contractor", contractorRouter);
+app.use("/product", productRouter);
 app.use("/project" ,projectRouter)
 app.use('/tools', toolRoute)
+app.use('/productOrder', productOrderRoute)
+app.use('/ironOrder', ironOrderRoute)
 
 
 
