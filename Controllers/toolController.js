@@ -2,6 +2,7 @@ const Project = require("../Models/project");
 const Tool = require("../Models/tool");
 
 const Inventory = require("../Models/inventory");
+const { sign } = require("jsonwebtoken");
 
 const createTool = async (req, res) => {
   try {
@@ -37,14 +38,17 @@ const createTool = async (req, res) => {
     res.status(500).json("Something went wrong");
   }
 };
-const updateTool = async (req, res) => {
+const updateToolTaken = async (req, res) => {
   try {
-    const { toolId, toolName } = req.body;
+    const { toolId, toolName, takenBy,signed } = req.body;
     console.log(toolId);
     const updatedTool = await Tool.findOneAndReplace(
       { _id: toolId },
       {
         toolName: toolName,
+        takenBy: takenBy,
+        signed: signed,
+        date: new Date()
       }
     );
     res.status(201).json(updatedTool);
@@ -110,4 +114,19 @@ const getAllTools = async (req, res) => {
     res.status(500).json("fuck");
   }
 };
-module.exports = { createTool, updateTool, deleteTool, getTool, getAllTools };
+const updateTool = async (req, res) => {
+  try {
+    const { toolId, toolName } = req.body;
+    console.log(toolId);
+    const updatedTool = await Tool.findOneAndReplace(
+      { _id: toolId },
+      {
+        toolName: toolName,
+      }
+    );
+    res.status(201).json(updatedTool);
+  } catch {
+    res.status(500).json("Couldn't update the tool");
+  }
+};
+module.exports = { createTool, updateTool, updateToolTaken, deleteTool, getTool, getAllTools };
