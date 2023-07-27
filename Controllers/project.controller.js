@@ -1,7 +1,7 @@
 const Project = require("../Models/project");
 const Inventory = require("../Models/inventory");
 const Contractor = require("../Models/contractor");
-const Order = require("../Models/order");
+const Orders = require("../Models/orders")
 
 
 exports.createProject = async (req, res) => {
@@ -9,7 +9,7 @@ exports.createProject = async (req, res) => {
     //A METHOD THAT CREATES A NEW PROJECT
     const newInventory = await Inventory.create({})
     const newContractor = await Contractor.create({})
-    const newOrder = await Order.create({})
+    const newOrders = await Orders.create({})
     const { name, startingDate, finishDate, projectManager } = req.body;
     const newProject = await Project.create({
       name,
@@ -18,7 +18,7 @@ exports.createProject = async (req, res) => {
       projectManager,
       inventory: newInventory._id,
       contractors: newContractor._id,
-      orders: newContractor._id
+      projectOrders: newOrders._id
     });
 
     res.status(201).json(newProject);
