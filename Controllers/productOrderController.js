@@ -48,6 +48,7 @@ const getAllProductOrders = async (req, res) => {
   console.log(ordersId);
   try {
     const orders = await Orders.findById(ordersId).populate("productOrders");
+    console.log(orders);
     if (orders && orders.productOrders) {
       res.status(200).json(orders);
     } else {
@@ -73,4 +74,9 @@ const updateProductOrder = async (req, res) => {
     res.status(500).json("Couldn't update the order");
   }
 };
-module.exports = { createProductOrder, getProductOrder, getAllProductOrders, updateProductOrder };
+module.exports = {
+  createProductOrder,
+  getProductOrder,
+  getAllProductOrders,
+  updateProductOrder,
+};

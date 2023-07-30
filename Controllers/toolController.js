@@ -40,25 +40,6 @@ const createTool = async (req, res) => {
 };
 const updateToolTaken = async (req, res) => {
   try {
-    const { toolId, toolName, takenBy,signed } = req.body;
-    console.log(toolId);
-    const updatedTool = await Tool.findOneAndReplace(
-      { _id: toolId },
-      {
-        toolName: toolName,
-        takenBy: takenBy,
-        signed: signed,
-        date: new Date()
-      }
-    );
-    const theTool = await Tool.findById(updatedTool._id);
-    res.status(201).json(theTool);
-  } catch {
-    res.status(500).json("Couldn't update the tool");
-  }
-};
-const updateToolTaken = async (req, res) => {
-  try {
     const { toolId, toolName, takenBy, signed } = req.body;
     console.log(toolId);
     const updatedTool = await Tool.findOneAndReplace(
@@ -150,5 +131,11 @@ const updateTool = async (req, res) => {
     res.status(500).json("Couldn't update the tool");
   }
 };
-module.exports = { createTool, updateTool, updateToolTaken, deleteTool, getTool, getAllTools };
-
+module.exports = {
+  createTool,
+  updateTool,
+  updateToolTaken,
+  deleteTool,
+  getTool,
+  getAllTools,
+};

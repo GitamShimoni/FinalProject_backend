@@ -1,10 +1,20 @@
 const Contractor = require("../Models/contractor");
 const Service = require("../Models/service");
+const Project = require("../Models/project");
 
+const getAllContractors = async (req, res) => {
+  const { projectId } = req.boy;
+  try {
+    const allContractors = Project.findById(projectId).populate("contractors");
+    res.status(201).json(allContractors);
+  } catch {
+    res.status(500).send("Get Failed");
+  }
+};
 const createContractor = async (req, res) => {
   try {
     //SHOULD ADD A PROJECT KEY HEADER, FIND THE PROJECT AND ADD THE UPDATED CONTRACTOR TO THE PROJECT
-    const { name, section, sectionName, unit, price } = req.body;
+    const { name, section, sectionName, unit, price, projectId } = req.body;
 
     //CREATE NEW CONTRACTOR
     const newContractor = await Contractor.create({
@@ -25,6 +35,11 @@ const createContractor = async (req, res) => {
       { $push: { services: { _id: newService._id } } },
       { new: true }
     );
+    const updatedProject = await Project.findByIdAndUpdate(
+      newContractor._id,
+      { $push: { contractors: { _id: updatedContractor._id } } },
+      { new: true }
+    );
     res.status(201).json(updatedContractor);
   } catch {
     res.status(401).send("Couldnt make contractor");
@@ -39,7 +54,7 @@ const deleteContractor = async (req, res) => {
     res.status(202).json(deletedContractor);
   } catch {
     res.status(500).json("Couldn't delete the given contractor");
-  } 
+  }
 };
 
 //A METHOD THAT ADDS A SERVICE TO A CONTRACTOR

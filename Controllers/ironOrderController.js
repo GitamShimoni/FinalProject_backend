@@ -61,7 +61,7 @@ const getAllIronOrders = async (req, res) => {
   const { ordersId } = req.body;
   console.log(ordersId);
   try {
-    const orders = await Orders.findById(ordersId).populate("ironOrders")
+    const orders = await Orders.findById(ordersId).populate("ironOrders");
     if (orders && orders.ironOrders) {
       res.status(200).json(orders);
     } else {
@@ -89,4 +89,9 @@ const updateIronOrder = async (req, res) => {
     res.status(500).json("Couldn't update the order");
   }
 };
-module.exports = { createIronOrder, getIronOrder, getAllIronOrders, updateIronOrder };
+module.exports = {
+  createIronOrder,
+  getIronOrder,
+  getAllIronOrders,
+  updateIronOrder,
+};
