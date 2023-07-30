@@ -6,6 +6,7 @@ const productOrderSchema = new mongoose.Schema({
   dateOfOrder: { type: Date },
   quantity: { type: Number },
   status: { type: String },
+  unit: {type: String}
 });
 
 module.exports = mongoose.model("ProductOrder", productOrderSchema);

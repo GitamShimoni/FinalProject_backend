@@ -9,7 +9,8 @@ const ironOrderSchema = new mongoose.Schema({
   requestedQuantity: { type: Number },
   arrivedQuantity: { type: Number },
   status: { type: String },
-  reciptSrc: { type: String },
+  receiptSrc: { type: String },
+  unit: { type: String },
 });
 
 module.exports = mongoose.model("IronOrder", ironOrderSchema);
