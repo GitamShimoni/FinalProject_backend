@@ -13,19 +13,10 @@ const createIronOrder = async (req, res) => {
       requestedQuantity,
       arrivedQuantity,
       status,
-      reciptSrc,
+      receiptSrc: receiptSrc,
+      unit
     } = req.body;
     const orders = await Orders.findById(ordersId);
-    console.log(
-      ordersId,
-      ironName,
-      requestedArrivalDate,
-      arrivalDate,
-      requestedQuantity,
-      arrivedQuantity,
-      status,
-      reciptSrc
-    );
     if (!orders) {
       return res.status(404).json({ error: "Orders not found" });
     }
@@ -38,7 +29,7 @@ const createIronOrder = async (req, res) => {
       requestedQuantity,
       arrivedQuantity,
       status,
-      reciptSrc,
+      receiptSrc: receiptSrc,
     });
     const updateOrders = await Orders.findByIdAndUpdate(
       ordersId,
@@ -70,11 +61,11 @@ const getAllIronOrders = async (req, res) => {
   const { ordersId } = req.body;
   console.log(ordersId);
   try {
-    const orders = await Orders.findById(ordersId).populate("ironOrders")
+    const orders = await Orders.findById(ordersId).populate("ironOrders");
     if (orders && orders.ironOrders) {
       res.status(200).json(orders);
     } else {
-      res.status(404).json("wasn't able to find iron oreder or orders");
+      res.status(404).json("wasn't able to find iron order or orders");
     }
   } catch {
     res.status(500).json("fuck");
@@ -98,4 +89,9 @@ const updateIronOrder = async (req, res) => {
     res.status(500).json("Couldn't update the order");
   }
 };
-module.exports = { createIronOrder, getIronOrder, getAllIronOrders, updateIronOrder };
+module.exports = {
+  createIronOrder,
+  getIronOrder,
+  getAllIronOrders,
+  updateIronOrder,
+};
