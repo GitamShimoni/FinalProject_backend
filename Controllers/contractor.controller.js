@@ -75,7 +75,7 @@ const editContractorService = async (req, res) => {
       unit: unit,
       price: price,
     });
-    const contractorId = updatedService;
+    const contractorId = updatedService._id;
     // const updatedContractor = await Contractor.findByIdAndUpdate(
     //   contractorId,
     //   { $push: { services: { _id: newService._id } } },

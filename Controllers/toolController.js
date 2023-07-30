@@ -47,7 +47,27 @@ const updateTool = async (req, res) => {
         toolName: toolName,
       }
     );
-    res.status(201).json(updatedTool);
+    const theTool = await Tool.findById(updatedTool._id);
+    res.status(201).json(theTool);
+  } catch {
+    res.status(500).json("Couldn't update the tool");
+  }
+};
+const updateToolTaken = async (req, res) => {
+  try {
+    const { toolId, toolName, takenBy, signed } = req.body;
+    console.log(toolId);
+    const updatedTool = await Tool.findOneAndReplace(
+      { _id: toolId },
+      {
+        toolName: toolName,
+        takenBy: takenBy,
+        signed: signed,
+        date: new Date(),
+      }
+    );
+    const theTool = await Tool.findById(updatedTool._id);
+    res.status(201).json(theTool);
   } catch {
     res.status(500).json("Couldn't update the tool");
   }
@@ -63,7 +83,6 @@ const updateTool = async (req, res) => {
 //   }
 // };
 const deleteTool = async (req, res) => {
-  console.log(req.body);
   console.log(req.body.toolId);
   try {
     const toolId = req.body.toolId;
@@ -72,7 +91,7 @@ const deleteTool = async (req, res) => {
     if (!deletedTool) {
       return res.status(404).json({ error: "Tool not found" });
     }
-
+    console.log(deletedTool, "This tool has been deleted");
     res.status(200).json({ message: "Tool deleted successfully" });
   } catch (err) {
     res.status(500).json({ error: "Couldn't delete the tool", err });
@@ -81,7 +100,8 @@ const deleteTool = async (req, res) => {
 
 const getTool = async (req, res) => {
   try {
-    const toolId = req.body.toolId;
+    console.log(req.body, "This is the body");
+    const { toolId } = req.body;
     console.log(toolId);
     const tool = await Tool.findById(toolId);
 
@@ -110,4 +130,11 @@ const getAllTools = async (req, res) => {
     res.status(500).json("fuck");
   }
 };
-module.exports = { createTool, updateTool, deleteTool, getTool, getAllTools };
+module.exports = {
+  createTool,
+  updateTool,
+  updateToolTaken,
+  deleteTool,
+  getTool,
+  getAllTools,
+};
