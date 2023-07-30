@@ -39,7 +39,7 @@ const deleteContractor = async (req, res) => {
     res.status(202).json(deletedContractor);
   } catch {
     res.status(500).json("Couldn't delete the given contractor");
-  }
+  } 
 };
 
 //A METHOD THAT ADDS A SERVICE TO A CONTRACTOR
