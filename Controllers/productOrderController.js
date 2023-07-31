@@ -5,7 +5,8 @@ const Orders = require("../Models/orders");
 const createProductOrder = async (req, res) => {
   try {
     //A FUNCTION THAT CREATES A NEW PRODUCT ORDER AND PUSHES IT TO A SPECIFIC "ORDERS"
-    const { ordersId, productName, unit, dateOfOrder, quantity, status } = req.body;
+    const { ordersId, productName, unit, dateOfOrder, quantity, status } =
+      req.body;
     const orders = await Orders.findById(ordersId);
     if (!orders) {
       return res.status(404).json({ error: "Orders not found" });
@@ -16,7 +17,7 @@ const createProductOrder = async (req, res) => {
       dateOfOrder,
       quantity,
       status,
-      unit
+      unit,
     });
     const updateOrders = await Orders.findByIdAndUpdate(
       ordersId,
@@ -48,6 +49,7 @@ const getAllProductOrders = async (req, res) => {
   console.log(ordersId);
   try {
     const orders = await Orders.findById(ordersId).populate("productOrders");
+    // orders.populate("productOrders");
     console.log(orders);
     if (orders && orders.productOrders) {
       res.status(200).json(orders);
