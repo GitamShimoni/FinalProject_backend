@@ -126,7 +126,8 @@ const updateTool = async (req, res) => {
         toolName: toolName,
       }
     );
-    res.status(201).json(updatedTool);
+    const TheTool = await Tool.findById(updatedTool._id);
+    res.status(201).json(TheTool);
   } catch {
     res.status(500).json("Couldn't update the tool");
   }
