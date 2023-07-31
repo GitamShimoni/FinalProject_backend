@@ -23,7 +23,7 @@ const createProductOrder = async (req, res) => {
       { $push: { productOrders: newProductOrder } },
       { new: true }
     );
-    res.status(200).json(newProductOrder.data);
+    res.status(200).json(newProductOrder);
   } catch (err) {
     res.status(500).json("Something went wrong");
   }

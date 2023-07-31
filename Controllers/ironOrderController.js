@@ -8,6 +8,7 @@ const createIronOrder = async (req, res) => {
     const {
       ordersId,
       ironName,
+      dateOfOrder,
       requestedArrivalDate,
       arrivalDate,
       requestedQuantity,
@@ -20,23 +21,25 @@ const createIronOrder = async (req, res) => {
     if (!orders) {
       return res.status(404).json({ error: "Orders not found" });
     }
+
     const newIronOrder = await IronOrder.create({
       ordersId,
       ironName,
-      dateOfOrder: new Date(),
+      dateOfOrder,
       requestedArrivalDate,
       arrivalDate,
       requestedQuantity,
       arrivedQuantity,
       status,
       receiptSrc: receiptSrc,
+      unit
     });
     const updateOrders = await Orders.findByIdAndUpdate(
       ordersId,
       { $push: { ironOrders: newIronOrder } },
       { new: true }
     );
-    res.status(200).json(updateOrders);
+    res.status(200).json(newIronOrder);
   } catch (err) {
     res.status(500).json("Something went wrong");
   }
