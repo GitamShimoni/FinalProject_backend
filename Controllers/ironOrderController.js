@@ -30,6 +30,7 @@ const createIronOrder = async (req, res) => {
       arrivedQuantity,
       status,
       receiptSrc: receiptSrc,
+      unit
     });
     const updateOrders = await Orders.findByIdAndUpdate(
       ordersId,

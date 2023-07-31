@@ -3,7 +3,7 @@ const Service = require("../Models/service");
 const Project = require("../Models/project");
 
 const getAllContractors = async (req, res) => {
-  const { projectId } = req.boy;
+  const  projectId = req.headers.projectid;
   try {
     const allContractors = Project.findById(projectId).populate("contractors");
     res.status(201).json(allContractors);
@@ -13,38 +13,52 @@ const getAllContractors = async (req, res) => {
 };
 const createContractor = async (req, res) => {
   try {
-    //SHOULD ADD A PROJECT KEY HEADER, FIND THE PROJECT AND ADD THE UPDATED CONTRACTOR TO THE PROJECT
-    const { name, section, sectionName, unit, price, projectId } = req.body;
+    const { name, services } = req.body;
+    const projectId = req.headers.projectid;
 
     //CREATE NEW CONTRACTOR
     const newContractor = await Contractor.create({
       name: name,
-    });
-    //CREATE A NEW SERVICE WITH THE CONTRACTOR ID
-    const newService = await Service.create({
-      section,
-      sectionName,
-      unit,
-      price,
-      contractorId: newContractor._id,
+      services: [], 
     });
 
-    //INSERT THE NEW SERVICE TO THE NEW CONTRACTOR
-    const updatedContractor = await Contractor.findByIdAndUpdate(
-      newContractor._id,
-      { $push: { services: { _id: newService._id } } },
-      { new: true }
-    );
-    const updatedProject = await Project.findByIdAndUpdate(
-      newContractor._id,
-      { $push: { contractors: { _id: updatedContractor._id } } },
-      { new: true }
-    );
-    res.status(201).json(updatedContractor);
-  } catch {
-    res.status(401).send("Couldnt make contractor");
+    // INSERT THE NEW SERVICES TO THE NEW CONTRACTOR
+    for (const serviceData of services) {
+      const newService = await Service.create({
+        section: serviceData.section,
+        sectionName: serviceData.sectionName,
+        price: serviceData.price,
+        contractorId: newContractor._id,
+      });
+
+      newContractor.services.push(newService);
+    }
+
+    // SAVE THE UPDATED CONTRACTOR
+    await newContractor.save();
+
+    // FETCH THE PROJECT USING projectId
+    const project = await Project.findById(projectId);
+
+    if (!project) {
+      // If project with the provided projectId is not found, handle the error
+      return res.status(404).json({ message: "Project not found" });
+    }
+
+    // ADD THE NEW CONTRACTOR TO THE PROJECT'S CONTRACTORS ARRAY
+    project.contractors.push(newContractor);
+
+    // SAVE THE UPDATED PROJECT WITH THE NEW CONTRACTOR
+    await project.save();
+
+    res.status(201).json(newContractor);
+  } catch (error) {
+    res.status(500).json({ message: "Couldn't create the contractor" });
   }
 };
+
+
+
 
 //A METHOD THAT DELETES A GIVEN CONTRACTOR BY CONTRACTORID
 const deleteContractor = async (req, res) => {
@@ -60,11 +74,10 @@ const deleteContractor = async (req, res) => {
 //A METHOD THAT ADDS A SERVICE TO A CONTRACTOR
 const addServiceToContractor = async (req, res) => {
   try {
-    const { contractorId, section, sectionName, unit, price } = req.body;
+    const { contractorId, section, sectionName, price } = req.body;
     const newService = await Service.create({
       section,
       sectionName,
-      unit,
       price,
       contractorId: contractorId,
     });
@@ -83,11 +96,10 @@ const addServiceToContractor = async (req, res) => {
 
 const editContractorService = async (req, res) => {
   try {
-    const { serviceId, section, sectionName, unit, price } = req.body;
+    const { serviceId, section, sectionName, price } = req.body;
     const updatedService = await Service.findByIdAndUpdate(serviceId, {
       section: section,
       sectionName: sectionName,
-      unit: unit,
       price: price,
     });
     const contractorId = updatedService._id;
@@ -125,6 +137,7 @@ module.exports = {
   editContractorService,
   addServiceToContractor,
   deleteContractorService,
+  getAllContractors
 };
 
 //   name: {type: String},
