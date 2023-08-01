@@ -3,10 +3,22 @@ const Service = require("../Models/service");
 const Project = require("../Models/project");
 
 const getAllContractors = async (req, res) => {
-  const  projectId = req.headers.projectid;
+  const projectId = req.header("projectId");
+
   try {
-    const allContractors = Project.findById(projectId).populate("contractors");
+    const allContractors = await Project.findById(projectId).populate("contractors")
     res.status(201).json(allContractors);
+  } catch {
+    res.status(500).send("Get Failed");
+  }
+};
+
+const getAllServicesByContractorId = async (req, res) => {
+  const contractorId = req.body.contractorId;
+
+  try {
+    const allServices = await Contractor.findById(contractorId).populate("services")
+    res.status(201).json(allServices.services);
   } catch {
     res.status(500).send("Get Failed");
   }
@@ -14,7 +26,7 @@ const getAllContractors = async (req, res) => {
 const createContractor = async (req, res) => {
   try {
     const { name, services } = req.body;
-    const projectId = req.headers.projectid;
+    const projectId = req.headers.projectId;
 
     //CREATE NEW CONTRACTOR
     const newContractor = await Contractor.create({
@@ -29,6 +41,7 @@ const createContractor = async (req, res) => {
         sectionName: serviceData.sectionName,
         price: serviceData.price,
         contractorId: newContractor._id,
+        unit: newContractor.unit
       });
 
       newContractor.services.push(newService);
@@ -58,8 +71,6 @@ const createContractor = async (req, res) => {
 };
 
 
-
-
 //A METHOD THAT DELETES A GIVEN CONTRACTOR BY CONTRACTORID
 const deleteContractor = async (req, res) => {
   try {
@@ -74,12 +85,13 @@ const deleteContractor = async (req, res) => {
 //A METHOD THAT ADDS A SERVICE TO A CONTRACTOR
 const addServiceToContractor = async (req, res) => {
   try {
-    const { contractorId, section, sectionName, price } = req.body;
+    const {contractorId, section, sectionName, price, unit } = req.body;
     const newService = await Service.create({
       section,
       sectionName,
       price,
       contractorId: contractorId,
+      unit
     });
     const updatedContractor = await Contractor.findByIdAndUpdate(
       contractorId,
@@ -102,12 +114,6 @@ const editContractorService = async (req, res) => {
       sectionName: sectionName,
       price: price,
     });
-    const contractorId = updatedService._id;
-    // const updatedContractor = await Contractor.findByIdAndUpdate(
-    //   contractorId,
-    //   { $push: { services: { _id: newService._id } } },
-    //   { new: true }
-    // );
     res.status(202).json(updatedService);
   } catch {
     res.status(500).json("Couldn't edit the given service");
@@ -137,7 +143,8 @@ module.exports = {
   editContractorService,
   addServiceToContractor,
   deleteContractorService,
-  getAllContractors
+  getAllContractors,
+  getAllServicesByContractorId
 };
 
 //   name: {type: String},
