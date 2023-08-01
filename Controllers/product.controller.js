@@ -1,4 +1,5 @@
 const Product = require("../Models/product");
+const Inventory = require("../Models/inventory")
 
 exports.createProduct = async (req, res) => {
   try {
@@ -43,17 +44,6 @@ exports.getProductById = async (req, res) => {
   }
 };
 
-exports.getAllProducts = async (req, res) => {
-  try {
-    //A METHOD THAT RETURNS A PRODUCT OBJ
-    const products = await Product.find({});
-
-    res.status(200).json(products);
-  } catch {
-    res.status(401).send("Couldn't find this project");
-  }
-};
-
 exports.editProduct = async (req, res) => {
   try {
     //A METHOD THAT EDITS A PRODUCT OBJ
@@ -74,5 +64,21 @@ exports.editProduct = async (req, res) => {
     res.status(200).json(updatedProduct);
   } catch {
     res.status(401).send("Couldn't find this project");
+  }
+};
+
+exports.getAllProducts = async (req, res) => {
+  const { inventoryId } = req.body;
+  console.log(inventoryId);
+  try {
+    const inventory = await Inventory.findById(inventoryId).populate("products");
+    console.log(inventory, "This is the inventory");
+    if (inventory && inventory.products) {
+      res.status(200).json(inventory.products);
+    } else {
+      res.status(404).json("wasn't able to find product or products");
+    }
+  } catch {
+    res.status(500).json("fuck");
   }
 };

@@ -62,3 +62,13 @@ exports.createProjectOrders = async (req, res) => {
     res.status(401).send("Couldn't find this project");
   }
 };
+
+exports.getAllProjects = async (req, res) => {
+  try {
+    //A METHOD THAT RETURNS ALL THE PROJECTS
+    const projects = await Project.find({})
+    res.status(200).json(projects);
+  } catch {
+    res.status(401).send("UF");
+  }
+};

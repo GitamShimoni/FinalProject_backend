@@ -26,7 +26,9 @@ const getAllServicesByContractorId = async (req, res) => {
 const createContractor = async (req, res) => {
   try {
     const { name, services } = req.body;
+
     const projectId = req.headers.projectId;
+
 
     //CREATE NEW CONTRACTOR
     const newContractor = await Contractor.create({
@@ -43,7 +45,6 @@ const createContractor = async (req, res) => {
         contractorId: newContractor._id,
         unit: newContractor.unit
       });
-
       newContractor.services.push(newService);
     }
 
@@ -52,6 +53,7 @@ const createContractor = async (req, res) => {
 
     // FETCH THE PROJECT USING projectId
     const project = await Project.findById(projectId);
+    console.log(project, "THIS IS THE PROJECT");
 
     if (!project) {
       // If project with the provided projectId is not found, handle the error
