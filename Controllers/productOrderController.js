@@ -63,15 +63,16 @@ const getAllProductOrders = async (req, res) => {
 
 const updateProductOrder = async (req, res) => {
   try {
-    const productOrderId = req.body.productOrderId;
+    const { productOrderId, changeStatus } = req.body;
     const updatedProductOrder = await ProductOrder.findByIdAndUpdate(
       productOrderId,
       {
-        status: req.body.status,
+        status: changeStatus,
       },
-      { mew: true }
+      { new: true }
     );
-    res.status(201).json(updatedProductOrder);
+    const newProductOrder = await ProductOrder.findById(productOrderId);
+    res.status(201).json(newProductOrder);
   } catch {
     res.status(500).json("Couldn't update the order");
   }

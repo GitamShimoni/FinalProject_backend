@@ -1,54 +1,44 @@
 const User = require("../Models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const saltRounds = 10;
+
+require("dotenv").config();
 
 const login = async (req, res) => {
-  const { username, password } = req.body;
-  const existUser = await User.findOne({ username });
-  if (!existUser) {
-    return res.status(401).json({ message: "Couldnt find this user" });
-  }
-  bcrypt.compare(password, existUser.password, (err, isMatch) => {
-    if (err || !isMatch) {
-      return res.status(401).json({ message: "Invalid username or password" });
+  try {
+    const { username, password } = req.body;
+    const isUser = await User.findOne({ username: req.body.username });
+    if (!isUser) {
+      return res.status(401).json({ message: "Invalid user or password" });
     } else {
-      console.log(process.env.SECRET);
-      const token = jwt.sign({ id: existUser._id }, process.env.SECRET);
-      res.json({ token });
-      // res
-      //   .cookie("token", token, { maxAge: 4 * 60 * 60 * 1000, httpOnly: false })
-      //   .send();
-      // return res.status(201).json({message: "Logged in succesfully!"})
+      const isMatch = await bcrypt.compare(req.body.password, isUser.password);
+      if (!isMatch) {
+        return res.status(401).json({ message: "Invalid user or password" });
+      } else if (isMatch) {
+        const token = jwt.sign({ id: isUser._id }, process.env.JWT_SECRET);
+        return res.json({ token });
+      }
     }
-  });
+  } catch (err) {
+    res.status(500).json({ err });
+  }
 };
 
 const register = async (req, res) => {
-  const { username, password, fullname, gender, email, birthdate } = req.body;
-  console.log(username, password, fullname, gender, email, birthdate);
+  const { username, password } = req.body;
+  const salt = bcrypt.genSaltSync(10);
+  const hash = bcrypt.hashSync(password, salt);
+  const newUser = new User({ username, password: hash });
   try {
     const registerExists = await User.findOne({ username: req.body.username });
-    console.log(registerExists);
     if (registerExists) {
       return res.status(400).json("User is already registered!");
     }
-    console.log(password, "This is the password");
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-    console.log(hashedPassword, "This is the hashed password");
-    const newUser = await User.create({
-      username,
-      password: hashedPassword,
-      fullname,
-      gender,
-      email,
-      birthdate,
-    });
-    return res.status(200).json(newUser);
+    await User.create(newUser);
+    return res.status(200).send(newUser);
   } catch (err) {
     res.status(500).json(err.message);
   }
-  //   console.log(newUser);
 };
 
 module.exports = { login, register };
