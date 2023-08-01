@@ -3,6 +3,8 @@ const express = require("express");
 
 const router = express.Router();
 
-router.route("/authenticate").post(authenticateService.login);
+router.route("/login").post(authenticateService.login);
+
+router.route("/register").post(authenticateService.register);
 
 module.exports = router;
