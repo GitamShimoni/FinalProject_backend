@@ -11,6 +11,7 @@ const ironOrderSchema = new mongoose.Schema({
   status: { type: String },
   receiptSrc: { type: String },
   unit: { type: String },
+  supplier: { type: String },
 });
 
 module.exports = mongoose.model("IronOrder", ironOrderSchema);

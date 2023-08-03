@@ -15,7 +15,8 @@ const createIronOrder = async (req, res) => {
       arrivedQuantity,
       status,
       receiptSrc: receiptSrc,
-      unit
+      supplier,
+      unit,
     } = req.body;
     const orders = await Orders.findById(ordersId);
     if (!orders) {
@@ -32,7 +33,8 @@ const createIronOrder = async (req, res) => {
       arrivedQuantity,
       status,
       receiptSrc: receiptSrc,
-      unit
+      supplier,
+      unit,
     });
     const updateOrders = await Orders.findByIdAndUpdate(
       ordersId,
@@ -77,21 +79,26 @@ const getAllIronOrders = async (req, res) => {
 
 const updateIronOrder = async (req, res) => {
   try {
-    const ironOrderId = req.body.ironOrderId;
+    const { IronOrderId, changeStatus, arrivalDate, arrivedQuantity } =
+      req.body;
+    console.log(IronOrderId, changeStatus, arrivalDate, arrivedQuantity);
     const updatedIronOrder = await IronOrder.findByIdAndUpdate(
-      ironOrderId,
+      IronOrderId,
       {
-        arrivalDate: req.body.arrivalDate,
-        arrivedQuantity: req.body.arrivedQuantity,
-        status: req.body.status,
+        arrivalDate: arrivalDate,
+        arrivedQuantity: arrivedQuantity,
+        status: changeStatus,
       },
-      { mew: true }
+      { new: true }
     );
-    res.status(201).json(updatedIronOrder);
+    console.log(updatedIronOrder);
+    const newIronOrder = await IronOrder.findById(IronOrderId);
+    res.status(201).json(newIronOrder);
   } catch {
     res.status(500).json("Couldn't update the order");
   }
 };
+
 module.exports = {
   createIronOrder,
   getIronOrder,
