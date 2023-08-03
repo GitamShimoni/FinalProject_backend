@@ -31,7 +31,9 @@ const createContractor = async (req, res) => {
   try {
     const { name, services } = req.body;
 
+
     const projectId = req.header("projectId");
+
 
     //CREATE NEW CONTRACTOR
     const newContractor = await Contractor.create({
