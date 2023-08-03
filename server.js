@@ -8,6 +8,7 @@ const contractorRouter = require("./Routes/contractor.route");
 const projectRouter = require("./Routes/project.route")
 const productOrderRoute = require("./Routes/productOrderRoute")
 const ironOrderRoute = require("./Routes/ironOrderRoute")
+const userRoute = require("./Routes/userRoute")
 
 const productRouter = require("./Routes/product.route")
 
@@ -36,6 +37,7 @@ app.use("/project" ,projectRouter)
 app.use('/tools', toolRoute)
 app.use('/productOrder', productOrderRoute)
 app.use('/ironOrder', ironOrderRoute)
+app.use('/users', userRoute)
 
 
 
