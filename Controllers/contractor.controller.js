@@ -6,7 +6,9 @@ const getAllContractors = async (req, res) => {
   const projectId = req.header("projectId");
 
   try {
-    const allContractors = await Project.findById(projectId).populate("contractors")
+    const allContractors = await Project.findById(projectId).populate(
+      "contractors"
+    );
     res.status(201).json(allContractors);
   } catch {
     res.status(500).send("Get Failed");
@@ -17,7 +19,9 @@ const getAllServicesByContractorId = async (req, res) => {
   const contractorId = req.body.contractorId;
 
   try {
-    const allServices = await Contractor.findById(contractorId).populate("services")
+    const allServices = await Contractor.findById(contractorId).populate(
+      "services"
+    );
     res.status(201).json(allServices.services);
   } catch {
     res.status(500).send("Get Failed");
@@ -27,13 +31,14 @@ const createContractor = async (req, res) => {
   try {
     const { name, services } = req.body;
 
-    const projectId = req.headers.projectid;
+
+    const projectId = req.header("projectId");
 
 
     //CREATE NEW CONTRACTOR
     const newContractor = await Contractor.create({
       name: name,
-      services: [], 
+      services: [],
     });
 
     // INSERT THE NEW SERVICES TO THE NEW CONTRACTOR
@@ -43,7 +48,7 @@ const createContractor = async (req, res) => {
         sectionName: serviceData.sectionName,
         price: serviceData.price,
         contractorId: newContractor._id,
-        unit: newContractor.unit
+        unit: serviceData.unit,
       });
       newContractor.services.push(newService);
     }
@@ -72,7 +77,6 @@ const createContractor = async (req, res) => {
   }
 };
 
-
 //A METHOD THAT DELETES A GIVEN CONTRACTOR BY CONTRACTORID
 const deleteContractor = async (req, res) => {
   try {
@@ -87,20 +91,37 @@ const deleteContractor = async (req, res) => {
 //A METHOD THAT ADDS A SERVICE TO A CONTRACTOR
 const addServiceToContractor = async (req, res) => {
   try {
-    const {contractorId, section, sectionName, price, unit } = req.body;
+    const { contractorId, section, sectionName, price, unit } = req.body;
     const newService = await Service.create({
       section,
       sectionName,
       price,
       contractorId: contractorId,
-      unit
+      unit,
     });
     const updatedContractor = await Contractor.findByIdAndUpdate(
       contractorId,
       { $push: { services: { _id: newService._id } } },
       { new: true }
     );
-    res.status(201).json(updatedContractor);
+    res.status(201).json(newService);
+  } catch {
+    res.status(500).json("Couldn't add the given contractor");
+  }
+};
+
+const addServiceArrToContractor = async (req, res) => {
+  try {
+    const { contractorId, services } = req.body;
+    const updateContractor = await Contractor.findByIdAndUpdate(
+      contractorId,
+      {
+        $set: { services: services },
+      },
+      { new: true }
+    );
+    
+    res.status(201).json(updateContractor);
   } catch {
     res.status(500).json("Couldn't add the given contractor");
   }
@@ -146,7 +167,8 @@ module.exports = {
   addServiceToContractor,
   deleteContractorService,
   getAllContractors,
-  getAllServicesByContractorId
+  getAllServicesByContractorId,
+  addServiceArrToContractor
 };
 
 //   name: {type: String},

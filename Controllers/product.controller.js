@@ -34,9 +34,9 @@ exports.deleteProduct = async (req, res) => {
 
 exports.getProductById = async (req, res) => {
   try {
-    const productID = req.body.productID;
+    const productId = req.body.productId;
     //A METHOD THAT RETURNS A PRODUCT OBJ
-    const product = await Product.findById(productID);
+    const product = await Product.findById(productId);
 
     res.status(200).json(product);
   } catch {
