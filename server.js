@@ -26,7 +26,7 @@ mongoose
     console.error(err);
   });
 
-app.use(cors(), express.json(), helmet(), cookieParser());
+app.use(cors(), express.json());
 
 
 app.use("/contractor", contractorRouter);
