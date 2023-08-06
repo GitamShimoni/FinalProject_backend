@@ -1,6 +1,5 @@
 const Inventory = require("../Models/inventory");
 const Product = require("../Models/product");
-const Inventory = require("../Models/inventory")
 
 exports.createProduct = async (req, res) => {
   try {
@@ -89,7 +88,9 @@ exports.getAllProducts = async (req, res) => {
   const { inventoryId } = req.body;
   console.log(inventoryId);
   try {
-    const inventory = await Inventory.findById(inventoryId).populate("products");
+    const inventory = await Inventory.findById(inventoryId).populate(
+      "products"
+    );
     console.log(inventory, "This is the inventory");
     if (inventory && inventory.products) {
       res.status(200).json(inventory.products);
