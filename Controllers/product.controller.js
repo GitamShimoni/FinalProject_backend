@@ -1,6 +1,5 @@
 const Inventory = require("../Models/inventory");
 const Product = require("../Models/product");
-const Inventory = require("../Models/inventory")
 
 exports.createProduct = async (req, res) => {
   try {
