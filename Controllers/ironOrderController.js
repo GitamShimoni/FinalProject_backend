@@ -41,7 +41,10 @@ const createIronOrder = async (req, res) => {
       { $push: { ironOrders: newIronOrder } },
       { new: true }
     );
-    res.status(200).json(newIronOrder);
+    const newupdateOrders = await Orders.findById(updateOrders._id).populate(
+      "ironOrders"
+    );
+    res.status(200).json(newupdateOrders.ironOrders);
   } catch (err) {
     res.status(500).json("Something went wrong");
   }
