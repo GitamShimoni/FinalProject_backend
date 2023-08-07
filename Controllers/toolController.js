@@ -8,7 +8,8 @@ const createTool = async (req, res) => {
   try {
     // SHOULD GET ID OF THE INVENTORY
 
-    const projectId = req.headers.projectId;
+
+    const projectId = req.headers.projectid;
     console.log(projectId);
 
     const { ...rest } = req.body;
