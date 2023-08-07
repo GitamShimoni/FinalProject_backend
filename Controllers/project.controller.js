@@ -63,9 +63,9 @@ exports.getProjectById = async (req, res) => {
           { path: "ironOrders", model: "IronOrders" },
           { path: "productOrders", model: "ProductOrder" },
         ],
-      }
+      },
     ]);
-
+    // console.log(project, "This is the object");
     res.status(200).json(project);
   } catch {
     res.status(401).send("Couldn't find this project");
