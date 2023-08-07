@@ -1,9 +1,5 @@
 const Inventory = require("../Models/inventory");
 const Product = require("../Models/product");
-<<<<<<< HEAD
-=======
-
->>>>>>> c1e678e2dc850805b17669d31730013396df913e
 
 exports.createProduct = async (req, res) => {
   try {
