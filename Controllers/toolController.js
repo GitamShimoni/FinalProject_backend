@@ -7,7 +7,7 @@ const { sign } = require("jsonwebtoken");
 const createTool = async (req, res) => {
   try {
     // SHOULD GET ID OF THE INVENTORY
-    const projectId = req.headers.projectid;
+    const projectId = req.headers.projectId;
     console.log(projectId);
     const { ...rest } = req.body;
     try {
