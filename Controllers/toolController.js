@@ -8,6 +8,7 @@ const createTool = async (req, res) => {
   try {
     // SHOULD GET ID OF THE INVENTORY
 
+
     const projectId = req.headers.projectid;
     console.log(projectId);
 
@@ -104,7 +105,7 @@ const getTool = async (req, res) => {
 
 const getAllTools = async (req, res) => {
   const { inventoryId } = req.body;
-  console.log(inventoryId);
+  // console.log(inventoryId);
   try {
     const inventory = await Inventory.findById(inventoryId).populate("tools");
     // console.log(inventory, "This is the inventory");

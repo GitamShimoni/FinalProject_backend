@@ -1,120 +1,54 @@
 const EndDayForm = require("../Models/EndDayForm");
 const EndDaySummary = require("../Models/EndDaySummary");
+const ServiceForm = require("../Models/ContractorServiceForm");
+const project = require("../Models/project");
 
-const getAllFormContractors = async (req, res) => {
+const getAllContractorServiceForms = async (req, res) => {
   const projectId = req.header("projectId");
   try {
-    const allContractors = await EndDaySummary.findById(projectId).populate(
-      "contractorForms"
+    const allContractorServiceForms = await project.findById(projectId).populate(
+      "serviceForms"
     );
-    res.status(201).json(allContractors);
-  } catch {
-    res.status(500).send("Get Failed");
+    res.status(200).json(allContractorServiceForms);
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred while getting all Contractor Service Forms" });
+  }
+};
+
+const getContractorServiceFormByContractorId = async (req, res) => {
+  try {
+    const contractorServiceForm = await ServiceForm.findById(contractorId);
+    res.status(200).json(contractorServiceForm);
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred while getting the Contractor Service Form" });
   }
 };
 
 
-const createContractorForm = async (req, res) => {
-    try {
-        const { whatWasDone, employeeNum, status, contractSection, unitOfMeasurement, quantity, contractorId } = req.body;
-        
-        const projectId = req.header("projectId");
-        
-        const newContractorForm = await EndDayForm.create({
-            whatWasDone,
-            employeeNum,
-            status,
-            contractSection,
-            unitOfMeasurement,
-            quantity,
-            contractorId,
-        });
-        
-      const endDaySummary = await EndDaySummary.findOne({ projectId });
-  
-      endDaySummary.contractorForms.push(newContractorForm._id);
-  
-      await endDaySummary.save();
-      
-      res.status(201).json({ message: "Form created successfully", form: newContractorForm });
-    } catch (error) {
-        res.status(500).json({ error: "An error occurred while creating the form" });
-    }
-};
-
-// const getAllServicesByContractorId = async (req, res) => {
-//   const contractorId = req.body.contractorId;
-
-//   try {
-//     const allServices = await Contractor.findById(contractorId).populate(
-//       "services"
-//     );
-//     res.status(201).json(allServices.services);
-//   } catch {
-//     res.status(500).send("Get Failed");
-//   }
-// };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-const addServiceArrToContractor = async (req, res) => {
+const createContractorServiceForm = async (req, res) => {
   try {
-    const { contractorId, services } = req.body;
-    const updateContractor = await Contractor.findByIdAndUpdate(
-      contractorId,
-      {
-        $set: { services: services },
-      },
-      { new: true }
-    );
+    const { whatWasDone, employeeNum, status, contractSection, unitOfMeasurement, materialsUsed } = req.body;
 
-    res.status(201).json(updateContractor);
-  } catch {
-    res.status(500).json("Couldn't add the given contractor");
-  }
-};
-
-//A METHOD THAT EDITS A CONTRACORS SERVICE BY GIVEN CREDENTIALS
-
-const editContractorService = async (req, res) => {
-  try {
-    const { serviceId, section, sectionName, price } = req.body;
-    const updatedService = await Service.findByIdAndUpdate(serviceId, {
-      section: section,
-      sectionName: sectionName,
-      price: price,
+    const newContractorServiceForm = await ServiceForm.create({
+      whatWasDone,
+      employeeNum,
+      status,
+      contractSection,
+      unitOfMeasurement,
+      materialsUsed
     });
-    res.status(202).json(updatedService);
-  } catch {
-    res.status(500).json("Couldn't edit the given service");
+
+    //NEEDDS TO PUSH IT TO THE PROJECT AS SERVICEFORMS
+    res.status(201).json({ message: "Contractor Service Form created successfully", form: newContractorServiceForm });
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred while creating the Contractor Service Form" });
   }
 };
 
 
 
 module.exports = {
-//   editContractorService,
-//   addServiceToContractor, 
-//   getAllServicesByContractorId,
-//   addServiceArrToContractor,
-  getAllFormContractors,
-  createContractorForm 
+  getAllContractorServiceForms,
+  getContractorServiceFormByContractorId,
+  createContractorServiceForm
 };

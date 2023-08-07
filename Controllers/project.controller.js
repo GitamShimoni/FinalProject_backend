@@ -63,6 +63,7 @@ exports.getProjectById = async (req, res) => {
           { path: "ironOrders", model: "IronOrders" },
           { path: "productOrders", model: "ProductOrder" },
         ],
+
       },
     ]);
     // console.log(project, "This is the object");
