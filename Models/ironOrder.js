@@ -8,6 +8,7 @@ const ironOrderSchema = new mongoose.Schema({
   arrivalDate: { type: Date },
   requestedQuantity: { type: Number },
   arrivedQuantity: { type: Number },
+  minQuantity: { type: Number },
   status: { type: String },
   receiptSrc: { type: String },
   unit: { type: String },

@@ -19,7 +19,6 @@ exports.createProject = async (req, res) => {
       inventory: newInventory._id,
       contractors: newContractor._id,
       projectOrders: newOrders._id,
-
     });
 
     res.status(201).json(newProject);
@@ -43,8 +42,30 @@ exports.deleteProject = async (req, res) => {
 exports.getProjectById = async (req, res) => {
   try {
     //A METHOD THAT RETURNS A PROJECT OBJ
+
     const projectId = req.header("projectId");
-    const project = await Project.findById(projectId)
+    const project = await Project.findById(projectId).populate([
+      {
+        path: "contractors",
+        populate: { path: "services", model: "Service" },
+      },
+      { path: "projectOrders" },
+      {
+        path: "inventory",
+        populate: [
+          { path: "products", model: "Product" },
+          { path: "tools", model: "Tool" },
+        ],
+      },
+      {
+        path: "projectOrders",
+        populate: [
+          { path: "ironOrders", model: "IronOrders" },
+          { path: "productOrders", model: "ProductOrder" },
+        ],
+      }
+    ]);
+
     res.status(200).json(project);
   } catch {
     res.status(401).send("Couldn't find this project");
@@ -66,7 +87,7 @@ exports.createProjectOrders = async (req, res) => {
 exports.getAllProjects = async (req, res) => {
   try {
     //A METHOD THAT RETURNS ALL THE PROJECTS
-    const projects = await Project.find({})
+    const projects = await Project.find({});
     res.status(200).json(projects);
   } catch {
     res.status(401).send("UF");
