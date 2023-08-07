@@ -6,16 +6,16 @@ exports.createProduct = async (req, res) => {
     //A METHOD THAT CREATES A NEW PRODUCT
     const { inventoryId, name, unit, quantity, minQuantity, isIron, orderId } =
       req.body;
-    console.log(
-      "GOT INTO THE FUNCTION FROM THE FRONTEND",
-      inventoryId,
-      name,
-      unit,
-      quantity,
-      minQuantity,
-      isIron,
-      orderId
-    );
+    // console.log(
+    //   "GOT INTO THE FUNCTION FROM THE FRONTEND",
+    //   inventoryId,
+    //   name,
+    //   unit,
+    //   quantity,
+    //   minQuantity,
+    //   isIron,
+    //   orderId
+    // );
     const newProduct = await Product.create({
       name,
       unit,
@@ -24,13 +24,13 @@ exports.createProduct = async (req, res) => {
       isIron,
       orderId,
     });
-    console.log("This is the newProduct from the back");
+    // console.log("This is the newProduct from the back");
     const newInventory = await Inventory.findByIdAndUpdate(
       inventoryId,
       { $push: { products: newProduct } },
       { new: true }
     );
-    console.log("This is the newInventory from the back");
+    // console.log("This is the newInventory from the back");
     res.status(201).json(newInventory);
   } catch {
     res.status(401).send("Couldn't create a new project");
@@ -86,12 +86,12 @@ exports.editProduct = async (req, res) => {
 
 exports.getAllProducts = async (req, res) => {
   const { inventoryId } = req.body;
-  console.log(inventoryId);
+  // console.log(inventoryId);
   try {
     const inventory = await Inventory.findById(inventoryId).populate(
       "products"
     );
-    console.log(inventory, "This is the inventory");
+    // console.log(inventory, "This is the inventory");
     if (inventory && inventory.products) {
       res.status(200).json(inventory.products);
     } else {
