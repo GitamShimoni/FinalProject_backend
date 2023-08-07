@@ -13,6 +13,7 @@ const createProductOrder = async (req, res) => {
       dateOfOrder,
       supplier,
       status,
+      minQuantity,
     } = req.body;
     const orders = await Orders.findById(ordersId);
     if (!orders) {
@@ -26,6 +27,7 @@ const createProductOrder = async (req, res) => {
       status,
       supplier,
       unit,
+      minQuantity,
     });
     const updateOrders = await Orders.findByIdAndUpdate(
       ordersId,
@@ -43,7 +45,7 @@ const createProductOrder = async (req, res) => {
 const getProductOrder = async (req, res) => {
   try {
     const productOrderId = req.body.productOrderId;
-    console.log(productOrderId);
+    // console.log(productOrderId);
     const productOrder = await ProductOrder.findById(productOrderId);
 
     if (productOrder) {
@@ -57,11 +59,11 @@ const getProductOrder = async (req, res) => {
 };
 const getAllProductOrders = async (req, res) => {
   const { ordersId } = req.body;
-  console.log(ordersId);
+  // console.log(ordersId);
   try {
     const orders = await Orders.findById(ordersId).populate("productOrders");
     // orders.populate("productOrders");
-    console.log(orders);
+    // console.log(orders);
     if (orders && orders.productOrders) {
       res.status(200).json(orders);
     } else {
@@ -73,10 +75,10 @@ const getAllProductOrders = async (req, res) => {
 };
 const getAllIronOrders = async (req, res) => {
   const { ordersId } = req.body;
-  console.log(ordersId);
+  // console.log(ordersId);
   try {
     const orders = await Orders.findById(ordersId).populate("ironOrders");
-    console.log(orders);
+    // console.log(orders);
     if (orders && orders.productOrders) {
       res.status(200).json(orders);
     } else {

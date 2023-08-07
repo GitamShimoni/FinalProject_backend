@@ -31,9 +31,7 @@ const createContractor = async (req, res) => {
   try {
     const { name, services } = req.body;
 
-
     const projectId = req.header("projectId");
-
 
     //CREATE NEW CONTRACTOR
     const newContractor = await Contractor.create({
@@ -58,7 +56,7 @@ const createContractor = async (req, res) => {
 
     // FETCH THE PROJECT USING projectId
     const project = await Project.findById(projectId);
-    console.log(project, "THIS IS THE PROJECT");
+    // console.log(project, "THIS IS THE PROJECT");
 
     if (!project) {
       // If project with the provided projectId is not found, handle the error
@@ -120,7 +118,7 @@ const addServiceArrToContractor = async (req, res) => {
       },
       { new: true }
     );
-    
+
     res.status(201).json(updateContractor);
   } catch {
     res.status(500).json("Couldn't add the given contractor");
@@ -168,7 +166,7 @@ module.exports = {
   deleteContractorService,
   getAllContractors,
   getAllServicesByContractorId,
-  addServiceArrToContractor
+  addServiceArrToContractor,
 };
 
 //   name: {type: String},

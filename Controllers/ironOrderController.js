@@ -17,7 +17,9 @@ const createIronOrder = async (req, res) => {
       receiptSrc: receiptSrc,
       supplier,
       unit,
+      minQuantity,
     } = req.body;
+    // console.log(minQuantity, "min quantity !!!!!!!");
     const orders = await Orders.findById(ordersId);
     if (!orders) {
       return res.status(404).json({ error: "Orders not found" });
@@ -35,7 +37,9 @@ const createIronOrder = async (req, res) => {
       receiptSrc: receiptSrc,
       supplier,
       unit,
+      minQuantity: minQuantity,
     });
+    // console.log(newIronOrder);
     const updateOrders = await Orders.findByIdAndUpdate(
       ordersId,
       { $push: { ironOrders: newIronOrder } },
@@ -53,7 +57,7 @@ const createIronOrder = async (req, res) => {
 const getIronOrder = async (req, res) => {
   try {
     const ironOrderId = req.body.ironOrderId;
-    console.log(ironOrderId);
+    // console.log(ironOrderId);
     const ironOrder = await IronOrder.findById(ironOrderId);
 
     if (ironOrder) {
@@ -67,7 +71,7 @@ const getIronOrder = async (req, res) => {
 };
 const getAllIronOrders = async (req, res) => {
   const { ordersId } = req.body;
-  console.log(ordersId);
+  // console.log(ordersId);
   try {
     const orders = await Orders.findById(ordersId).populate("ironOrders");
     if (orders && orders.ironOrders) {
@@ -84,7 +88,7 @@ const updateIronOrder = async (req, res) => {
   try {
     const { IronOrderId, changeStatus, arrivalDate, arrivedQuantity } =
       req.body;
-    console.log(IronOrderId, changeStatus, arrivalDate, arrivedQuantity);
+    // console.log(IronOrderId, changeStatus, arrivalDate, arrivedQuantity);
     const updatedIronOrder = await IronOrder.findByIdAndUpdate(
       IronOrderId,
       {
@@ -94,7 +98,7 @@ const updateIronOrder = async (req, res) => {
       },
       { new: true }
     );
-    console.log(updatedIronOrder);
+    // console.log(updatedIronOrder);
     const newIronOrder = await IronOrder.findById(IronOrderId);
     res.status(201).json(newIronOrder);
   } catch {
