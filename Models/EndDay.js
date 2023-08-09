@@ -25,7 +25,7 @@ const endDaySchema = new mongoose.Schema({
   contractorsArr: [
     {
       name: String,
-      services: [String],
+      services: [Object],
       howManyWorkers: String,
       materialsUsed: [
         { type: mongoose.Schema.Types.ObjectId, ref: "Material" },

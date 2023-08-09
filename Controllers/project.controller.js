@@ -11,6 +11,7 @@ exports.createProject = async (req, res) => {
     const newOrders = await Orders.create({});
 
     const { name, startingDate, finishDate, projectManager } = req.body;
+    console.log(startingDate, finishDate);
     const newProject = await Project.create({
       name,
       startingDate,
@@ -63,7 +64,6 @@ exports.getProjectById = async (req, res) => {
           { path: "ironOrders", model: "IronOrders" },
           { path: "productOrders", model: "ProductOrder" },
         ],
-
       },
     ]);
     // console.log(project, "This is the object");
