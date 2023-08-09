@@ -5,7 +5,7 @@ const projectSchema = new mongoose.Schema({
   contractors: [{ type: mongoose.Types.ObjectId, ref: "Contractor" }],
   projectOrders: { type: mongoose.Types.ObjectId, ref: "Orders" },
   inventory: [{ type: mongoose.Types.ObjectId, ref: "Inventory" }],
-  days: [{ type: mongoose.Types.ObjectId, ref: "Days" }],
+  days: [{ type: mongoose.Types.ObjectId, ref: "EndDay" }],
   startingDate: { type: Date },
   finishDate: { type: Date },
   projectManager: { type: String },
