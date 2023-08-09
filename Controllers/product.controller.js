@@ -6,6 +6,7 @@ exports.createProduct = async (req, res) => {
     //A METHOD THAT CREATES A NEW PRODUCT
     const { inventoryId, name, unit, quantity, minQuantity, isIron, orderId } =
       req.body;
+    console.log("GOT INTO THE FUNCTION");
     // console.log(
     //   "GOT INTO THE FUNCTION FROM THE FRONTEND",
     //   inventoryId,
@@ -24,7 +25,7 @@ exports.createProduct = async (req, res) => {
       isIron,
       orderId,
     });
-    // console.log("This is the newProduct from the back");
+    console.log(newProduct, "This is the newProduct from the back");
     const newInventory = await Inventory.findByIdAndUpdate(
       inventoryId,
       { $push: { products: newProduct } },

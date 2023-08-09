@@ -85,8 +85,49 @@ const getLatestEndDay = async (req, res) => {
     });
   }
 };
+const getLatestDayMaterialsUsed = async (req, res) => {
+  const { projectId } = req.body;
+  try {
+    const currentProject = await project.findById(projectId);
+    const TheDay = currentProject.days[currentProject.days.length - 1];
+    const ReturnedDay = await EndDay.findById(TheDay)
+
+      .populate({
+        path: "contractorsArr.materialsUsed", // Path to the materialsUsed field
+        model: "Product", // Model to populate with
+      })
+      .exec();
+    console.log(ReturnedDay, "This is the returned day");
+    const inputArray = ReturnedDay.allMaterialsUsed;
+    const aggregatedArray = [];
+    const nameMap = new Map();
+
+    inputArray.forEach((item) => {
+      if (nameMap.has(item.name)) {
+        const existingItem = nameMap.get(item.name);
+        existingItem.usedQuantity += parseFloat(item.usedQuantity);
+      } else {
+        const newItem = {
+          name: item.name,
+          unit: item.unit,
+          usedQuantity: parseFloat(item.usedQuantity),
+        };
+        nameMap.set(item.name, newItem);
+        aggregatedArray.push(newItem);
+      }
+    });
+
+    res.status(200).json(aggregatedArray);
+  } catch (error) {
+    res.status(500).json({
+      error: "An error occurred while getting all Contractor Service Forms",
+    });
+  }
+};
 
 module.exports = {
   getLatestEndDay,
   createEndDay,
+  getLatestDayMaterialsUsed,
 };
+
