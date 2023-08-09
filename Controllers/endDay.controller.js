@@ -4,79 +4,66 @@ const ServiceForm = require("../Models/ContractorServiceForm");
 const project = require("../Models/project");
 const EndDay = require("../Models/EndDay");
 
-
-
 const createEndDay = async (req, res) => {
   try {
-    //needs to get an array of contractors,  numberOfEmployees, conName, services [serviceName, sectionInContract, status, whatWasDone, unitOfMeasuremenet], materialsUsed[{name, quantity}]
-
-    //GETS FROM THE FRONT:
-    //[{howManyWorkers,  name, services[{WhatWasDone, contractorId, price, section, sectionName, status, unit}], materialsUsed[{name, quantity}]       }]
-    const { summary, projectId} = req.body;
+    const { summary, projectId } = req.body; // Assuming "summary" is the object you receive in req.body
     summary.date = new Date();
-    console.log(summary, "This is the summary from the front end");
-    const newEndDay = await EndDay.create({
-     summary: summary
+    // Map contractorsArr to include necessary fields
+    const contractorsArr = summary.contractorsArr.map((contractor) => {
+      return {
+        name: contractor.name,
+        services: contractor.services,
+        howManyWorkers: contractor.howManyWorkers,
+        materialsUsed: contractor.materialsUsed,
+      };
     });
-    console.log(newEndDay, "THATS THE CREATED END DAY");
-    const updateProject = await project.findByIdAndUpdate(projectId, { $push: { days: newEndDay } },
+
+    // Map allMaterialsUsed to include necessary fields
+    const allMaterialsUsed = summary.allMaterialsUsed.map((material) => {
+      return {
+        name: material.name,
+        unit: material.unit,
+        quantity: material.quantity,
+        isIron: material.isIron,
+        orderId: material.orderId,
+        usedQuantity: material.usedQuantity,
+      };
+    });
+
+    const newEndDay = new EndDay({
+      contractorsArr,
+      allMaterialsUsed,
+      date: summary.date,
+    });
+
+    await newEndDay.save();
+    const updateProject = await project.findByIdAndUpdate(
+      projectId,
+      { $push: { days: newEndDay } },
       { new: true }
-    )
-    //NEEDDS TO PUSH IT TO THE PROJECT AS SERVICEFORMS
-    console.log(updateProject, "THATS THE NEW PROJECTY");
-    res.status(201).json({ message: "Contractor Service Form created successfully", updateProject });
-  } catch (error) {
-    res.status(500).json({ error: "An error occurred while creating the Contractor Service Form" });
-  }
-};
-
-const getAllContractorServiceForms = async (req, res) => {
-  const projectId = req.header("projectId");
-  try {
-    const allContractorServiceForms = await project.findById(projectId).populate(
-      "serviceForms"
     );
-    res.status(200).json(allContractorServiceForms);
+    res.status(201).json({ updateProject });
   } catch (error) {
-    res.status(500).json({ error: "An error occurred while getting all Contractor Service Forms" });
+    console.error("Error creating EndDay:", error);
+    res.status(500).json({ message: "An error occurred" });
   }
 };
 
-const getContractorServiceFormByContractorId = async (req, res) => {
+const getLatestEndDay = async (req, res) => {
+  const { projectId } = req.body;
   try {
-    const contractorServiceForm = await ServiceForm.findById(contractorId);
-    res.status(200).json(contractorServiceForm);
+    const currentProject = await project.findById(projectId);
+    const TheDay = currentProject.days[currentProject.days.length - 1];
+    const ReturnedDay = await EndDay.findById(TheDay);
+    res.status(200).json(ReturnedDay);
   } catch (error) {
-    res.status(500).json({ error: "An error occurred while getting the Contractor Service Form" });
-  }
-};
-
-
-const createContractorServiceForm = async (req, res) => {
-  try {
-    const { contractor, conName,numberOfEmployees, services, whatWasDone, sectionInContract, status, serviceName, unitOfMeasurement, materialsUsed } = req.body;
-
-    const newContractorServiceForm = await ServiceForm.create({
-      whatWasDone,
-      employeeNum,
-      status,
-      serviceName,
-      unitOfMeasurement,
-      materialsUsed
+    res.status(500).json({
+      error: "An error occurred while getting all Contractor Service Forms",
     });
-
-    //NEEDDS TO PUSH IT TO THE PROJECT AS SERVICEFORMS
-    res.status(201).json({ message: "Contractor Service Form created successfully", form: newContractorServiceForm });
-  } catch (error) {
-    res.status(500).json({ error: "An error occurred while creating the Contractor Service Form" });
   }
 };
-
-
 
 module.exports = {
+  getLatestEndDay,
   createEndDay,
-  getAllContractorServiceForms,
-  getContractorServiceFormByContractorId,
-  createContractorServiceForm
 };
