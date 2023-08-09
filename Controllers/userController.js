@@ -96,4 +96,17 @@ const getAllUsers = async (req, res) => {
     res.status(401).send("UF");
   }
 };
-module.exports = { signup, login, isToken, updateUser, getAllUsers };
+
+const deleteUser = async (req,res) => {
+  try {
+    const { id } = jwt.verify(req.body.token, process.env.SECRET);
+    const deleteUser = User.findByIdAndDelete(id)
+    if (!deleteUser) {
+      res.status(401).json("couldnt delete the user")
+    }
+    res.status(201).json("user deleted successfully")
+  } catch {
+    res.status(401).json("fuck you")
+  }
+}
+module.exports = { signup, login, isToken, updateUser, getAllUsers, deleteUser };
