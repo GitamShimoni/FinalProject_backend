@@ -7,6 +7,7 @@ const projectRouter = require("./Routes/project.route")
 const productOrderRoute = require("./Routes/productOrderRoute")
 const ironOrderRoute = require("./Routes/ironOrderRoute")
 const userRoute = require("./Routes/userRoute")
+const endDayRoute = require("./Routes/endDayRoute")
 
 const productRouter = require("./Routes/product.route")
 
@@ -36,6 +37,7 @@ app.use('/tools', toolRoute)
 app.use('/productOrder', productOrderRoute)
 app.use('/ironOrder', ironOrderRoute)
 app.use('/users', userRoute)
+app.use('/endDay', endDayRoute)
 
 
 

@@ -4,11 +4,13 @@ const Project = require("../Models/project");
 
 const getAllContractors = async (req, res) => {
   const projectId = req.header("projectId");
-
+  console.log(projectId);
   try {
-    const allContractors = await Project.findById(projectId).populate(
-      "contractors"
-    );
+
+    const allContractors = await Project.findById(projectId).populate({
+      path: "contractors",
+      populate: { path: "services", model: "Service" },
+    });
     res.status(201).json(allContractors);
   } catch {
     res.status(500).send("Get Failed");

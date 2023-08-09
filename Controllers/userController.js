@@ -75,18 +75,22 @@ const updateUser = async (req, res) => {
 };
 
 const isToken = async (req, res) => {
+  const token = req.body.token 
   try {
-    const isId = jwt.verify(req.body.token, process.env.SECRET);
+    console.log("HI");
+    const isId = jwt.verify(token, process.env.SECRET);
+    console.log(isId, "This is the isId");
     const user = await User.findOne({ _id: isId.id });
+    console.log("This is the user");
     if (!user) {
-      return res.status(400).json("did not login");
+      return res.status(500).json("did not login");
     }
-    // console.log(user);
-    return res.status(200).json(user);
+   else {return res.status(200).json(user)} 
   } catch (err) {
     return res.status(500).json(err.message);
   }
 };
+
 const getAllUsers = async (req, res) => {
   try {
     //A METHOD THAT RETURNS ALL USERS
