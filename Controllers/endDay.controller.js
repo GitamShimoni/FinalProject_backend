@@ -8,16 +8,28 @@ const createEndDay = async (req, res) => {
   try {
     const { summary, projectId } = req.body; // Assuming "summary" is the object you receive in req.body
     summary.date = new Date();
+    console.log(summary.contractorsArr, "This is what i get from the front");
     // Map contractorsArr to include necessary fields
     const contractorsArr = summary.contractorsArr.map((contractor) => {
       return {
         name: contractor.name,
-        services: contractor.services,
+        services: contractor.services.map((service) => {
+          return {
+            section: service.section,
+            sectionName: service.sectionName,
+            unit: service.unit,
+            price: service.price,
+            contractorId: service.contractorId,
+            _id: service._id,
+            WhatWasDone: service.WhatWasDone,
+            status: service.status,
+          };
+        }),
         howManyWorkers: contractor.howManyWorkers,
         materialsUsed: contractor.materialsUsed,
       };
     });
-
+    console.log(contractorsArr[0], "This is the updated object");
     // Map allMaterialsUsed to include necessary fields
     const allMaterialsUsed = summary.allMaterialsUsed.map((material) => {
       return {
@@ -37,6 +49,7 @@ const createEndDay = async (req, res) => {
     });
 
     await newEndDay.save();
+    console.log(newEndDay.contractorsArr[0].services, "THIS IS NEW END DAY");
     const updateProject = await project.findByIdAndUpdate(
       projectId,
       { $push: { days: newEndDay } },
@@ -54,7 +67,17 @@ const getLatestEndDay = async (req, res) => {
   try {
     const currentProject = await project.findById(projectId);
     const TheDay = currentProject.days[currentProject.days.length - 1];
-    const ReturnedDay = await EndDay.findById(TheDay);
+    const ReturnedDay = await EndDay.findById(TheDay)
+      // .populate({
+      //   path: "contractorsArr.services", // Path to the services field
+      //   model: "Service", // Model to populate with
+      // })
+      .populate({
+        path: "contractorsArr.materialsUsed", // Path to the materialsUsed field
+        model: "Product", // Model to populate with
+      })
+      .exec();
+
     res.status(200).json(ReturnedDay);
   } catch (error) {
     res.status(500).json({

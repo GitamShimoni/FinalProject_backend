@@ -67,15 +67,15 @@ const updateUser = async (req, res) => {
     }
 
     await user.save();
-
-    res.status(200).json(user);
+    const allUsers = await User.find({});
+    res.status(200).json(allUsers);
   } catch (err) {
     res.status(500).json(err.message);
   }
 };
 
 const isToken = async (req, res) => {
-  const token = req.body.token 
+  const token = req.body.token;
   try {
     console.log("HI");
     const isId = jwt.verify(token, process.env.SECRET);
@@ -84,8 +84,9 @@ const isToken = async (req, res) => {
     console.log("This is the user");
     if (!user) {
       return res.status(500).json("did not login");
+    } else {
+      return res.status(200).json(user);
     }
-   else {return res.status(200).json(user)} 
   } catch (err) {
     return res.status(500).json(err.message);
   }
@@ -112,11 +113,18 @@ const deleteUser = async (req, res) => {
     if (!deletedUser) {
       return res.status(404).json("User not found");
     }
-
-    res.status(200).json("User deleted successfully"); 
+    const allUsers = await User.find({});
+    res.status(200).json(allUsers);
   } catch (error) {
     console.log(error);
     res.status(500).json("An error occurred");
   }
 };
-module.exports = { signup, login, isToken, updateUser, getAllUsers, deleteUser };
+module.exports = {
+  signup,
+  login,
+  isToken,
+  updateUser,
+  getAllUsers,
+  deleteUser,
+};
