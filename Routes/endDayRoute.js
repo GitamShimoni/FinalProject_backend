@@ -7,5 +7,8 @@ router.route("/getLatestEndDay").post(endDayController.getLatestEndDay);
 router
   .route("/getLatestDayMaterialsUsed")
   .post(endDayController.getLatestDayMaterialsUsed);
+router
+  .route("/removeLastDayMaterials")
+  .post(endDayController.removeLastDayMaterials);
 
 module.exports = router;
