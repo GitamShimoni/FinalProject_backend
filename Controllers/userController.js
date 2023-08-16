@@ -43,18 +43,15 @@ const login = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
-    const { id } = jwt.verify(req.body.token, process.env.SECRET);
-    const user = await User.findById(id);
+    const userId = req.body.userId;
+    const user = await User.findById(userId);
 
     if (!user) {
       return res.status(400).json("User not found");
     }
 
-    // Check if the request body contains updated fields and update them
     if (req.body.phone) {
-      const oldPhone = user.phoneNumber;
-      const newPhone = req.body.phone;
-      user.phoneNumber = user.phoneNumber.replace(oldPhone, newPhone);
+      user.phoneNumber = req.body.phone;
     }
 
     if (req.body.password) {
@@ -67,8 +64,8 @@ const updateUser = async (req, res) => {
     }
 
     await user.save();
-    const allUsers = await User.find({});
-    res.status(200).json(allUsers);
+
+    res.status(200).json(user);
   } catch (err) {
     res.status(500).json(err.message);
   }
@@ -105,21 +102,19 @@ const getAllUsers = async (req, res) => {
 const deleteUser = async (req, res) => {
   try {
     const token = req.body.token;
-    const realId = jwt.verify(token, process.env.SECRET);
+    const realId = req.body.realId;
     console.log(realId, "this is realId");
-
-    const deletedUser = await User.findByIdAndDelete(realId.id).exec();
-
+    const deletedUser = await User.findByIdAndDelete(realId); // Add await here
     if (!deletedUser) {
-      return res.status(404).json("User not found");
+      return res.status(401).json("Could not delete the user");
     }
-    const allUsers = await User.find({});
-    res.status(200).json(allUsers);
+    return res.status(201).json("User deleted successfully");
   } catch (error) {
-    console.log(error);
-    res.status(500).json("An error occurred");
+    console.error(error);
+    return res.status(500).json("Error deleting user");
   }
 };
+
 module.exports = {
   signup,
   login,
