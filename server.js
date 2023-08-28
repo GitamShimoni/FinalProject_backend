@@ -8,6 +8,7 @@ const productOrderRoute = require("./Routes/productOrderRoute")
 const ironOrderRoute = require("./Routes/ironOrderRoute")
 const userRoute = require("./Routes/userRoute")
 const endDayRoute = require("./Routes/endDayRoute")
+const cashFlowRoute = require("./Routes/cashFlow.route")
 
 const productRouter = require("./Routes/product.route")
 
@@ -38,6 +39,7 @@ app.use('/productOrder', productOrderRoute)
 app.use('/ironOrder', ironOrderRoute)
 app.use('/users', userRoute)
 app.use('/endDay', endDayRoute)
+app.use('/cashFlow', cashFlowRoute)
 
 
 

@@ -10,6 +10,7 @@ const projectSchema = new mongoose.Schema({
   finishDate: { type: Date },
   projectManager: { type: String },
   serviceForms: [{ type: mongoose.Types.ObjectId, ref: "ContractorServiceForm" }],
+  cashFlow: { type: mongoose.Types.ObjectId, ref: "CashFlow" }
 });
 
 module.exports = mongoose.model("Project", projectSchema);
